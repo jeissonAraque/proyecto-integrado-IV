@@ -74,4 +74,5 @@ def extract(
 
 if __name__ == "__main__":
     df = get_public_holidays("https://date.nager.at/api/v3/PublicHolidays", "2017")
+    print(df.head())
     print(df.shape)
