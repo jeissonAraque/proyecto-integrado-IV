@@ -16,5 +16,14 @@ def load(data_frames: Dict[str, DataFrame], database: Engine):
     # como una tabla.
     # Para el nombre de la tabla, utiliza las claves del diccionario `data_frames`.
     for table_name, df in data_frames.items():
-        df.to_sql(table_name, con=database, if_exists="replace")
+        try:
+            df.to_sql(
+                name=table_name,
+                con=database,
+                if_exists="replace",
+                index=False  
+            )
+            print(f"Tabla '{table_name}' cargada con éxito.")
+        except Exception as e:
+            print(f"Error al cargar la tabla '{table_name}': {e}")
         
