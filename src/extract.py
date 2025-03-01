@@ -72,7 +72,9 @@ def extract(
 
     return dataframes
 
-if __name__ == "__main__":
-    df = get_public_holidays("https://date.nager.at/api/v3/PublicHolidays", "2017")
-    print(df.head())
-    print(df.shape)
+# de esta manera probé que la función get_public_holidays() funciona correctamente
+
+# if __name__ == "__main__":
+#     df = get_public_holidays("https://date.nager.at/api/v3/PublicHolidays", "2017")
+#     print(df.head())
+#     print(df.shape)
