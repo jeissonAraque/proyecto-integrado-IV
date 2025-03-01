@@ -1,3 +1,4 @@
 .pytest_cache
 dataset
 __pycache__
+olist.db
