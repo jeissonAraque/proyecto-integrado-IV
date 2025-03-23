@@ -15,7 +15,7 @@ QueryResult = namedtuple("QueryResult", ["query", "result"])
 class QueryEnum(Enum):
     """This class enumerates all the queries that are available"""
 
-    DELIVERY_DATE_DIFFERECE = "delivery_date_difference"
+    DELIVERY_DATE_DIFFERENCE = "delivery_date_difference"
     GLOBAL_AMMOUNT_ORDER_STATUS = "global_ammount_order_status"
     REVENUE_BY_MONTH_YEAR = "revenue_by_month_year"
     REVENUE_PER_STATE = "revenue_per_state"
@@ -50,8 +50,8 @@ def query_delivery_date_difference(database: Engine) -> QueryResult:
     Returns:
         Query: The query for delivery date difference.
     """
-    query_name = QueryEnum.DELIVERY_DATE_DIFFERECE.value
-    query = read_query(QueryEnum.DELIVERY_DATE_DIFFERECE.value)
+    query_name = QueryEnum.DELIVERY_DATE_DIFFERENCE.value #se cambia nombre de la constante a DELIVERY_DATE_DIFFERENCE por que estaba mal escrita
+    query = read_query(QueryEnum.DELIVERY_DATE_DIFFERENCE.value)
     return QueryResult(query=query_name, result=read_sql(query, database))
 
 
@@ -172,13 +172,14 @@ def query_freight_value_weight_relationship(database: Engine) -> QueryResult:
     # TODO: Fusionar las tablas items, orders y products usando 'order_id'/'product_id'.
     # Sugerimos usar la función pandas.merge().
     # Asigna el resultado a la variable `data`.
-    data = ...
+    data = items.merge(products, on='product_id', how='left')
+    data = data.merge(orders, on='order_id', how='left')
 
     # TODO: Obtener solo los pedidos entregados.
     # Usando los resultados anteriores de la fusión (almacenados en la variable `data`),
     # aplica una máscara booleana para conservar solo los pedidos con estado 'delivered'.
     # Asigna el resultado a la variable `delivered`.
-    delivered = ...
+    delivered = data[data['order_status'] == 'delivered']
 
     # TODO: Obtener la suma de freight_value y product_weight_g por cada order_id.
     # Un mismo pedido (identificado por 'order_id') puede contener varios productos,
@@ -188,7 +189,10 @@ def query_freight_value_weight_relationship(database: Engine) -> QueryResult:
     # que consultes pandas.DataFrame.groupby() y pandas.DataFrame.agg() para la
     # transformación de los datos.
     # Guarda el resultado en la variable `aggregations`.
-    aggregations = ...
+    aggregations = delivered.groupby('order_id').agg(
+        total_freight_value=('freight_value', 'sum'),
+        total_weight_g=('product_weight_g', 'sum')
+    ).reset_index()
 
     # Mantén el código a continuación tal como está, esto devolverá el resultado de
     # la variable `aggregations` con el nombre y formato correspondiente.
@@ -266,8 +270,8 @@ def get_all_queries() -> List[Callable[[Engine], QueryResult]]:
         query_top_10_least_revenue_categories,
         query_top_10_revenue_categories,
         query_real_vs_estimated_delivered_time,
-        query_orders_per_day_and_holidays_2017,
-        query_freight_value_weight_relationship,
+        # query_orders_per_day_and_holidays_2017,
+        # query_freight_value_weight_relationship,
     ]
 
 
